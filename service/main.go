@@ -10,6 +10,7 @@ import (
 	"github.com/pborman/uuid"
 	"gopkg.in/olivere/elastic.v3"
 	"log"
+	"strings"
 )
 
 const (
@@ -20,7 +21,7 @@ const (
 	//PROJECT_ID = "around-xxx"
 	//BT_INSTANCE = "around-post"
 	// Needs to update this URL if you deploy it to cloud.
-	ES_URL = "http://35.231.33.97:9200"
+	ES_URL = "http://104.196.138.154:9200"
 )
 
 
@@ -167,6 +168,10 @@ func handlerSearch(w http.ResponseWriter, r *http.Request) {
 		p := item.(Post) // p = (Post) item
 		fmt.Printf("Post by %s: %s at lat %v and lon %v\n", p.User, p.Message, p.Location.Lat, p.Location.Lon)
 		// TODO(student homework): Perform filtering based on keywords such as web spam etc.
+		if !containsFilteredWords(&p.Message) {
+			ps = append(ps, p)
+		}
+
 		ps = append(ps, p)
 
 	}
@@ -181,4 +186,18 @@ func handlerSearch(w http.ResponseWriter, r *http.Request) {
 	w.Write(js)
 
 
+}
+
+
+func containsFilteredWords(s *string) bool {
+	filteredWords := []string{
+		"fuck",
+		"shit",
+	}
+	for _, word := range filteredWords {
+		if strings.Contains(*s, word) {
+			return true
+		}
+	}
+	return false
 }
