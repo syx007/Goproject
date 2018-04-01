@@ -18,6 +18,9 @@ export class Main extends React.Component {
         return <Redirect to = '/login'/>
     }
 
+    getRegister = () => {
+        return
+    }
     render() {
         return (
             <div className ="main">
